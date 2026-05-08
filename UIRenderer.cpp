@@ -1,0 +1,111 @@
+#include <iostream>
+#include <string>
+#include "UIRenderer.h"
+using namespace std;
+
+UIRenderer::UIRenderer() {
+    //아스키 아트 예시 추후 선택지에 따라서 애니매이션을 넣은다면 간결화 및 더 많은 아트 필요
+    eggArt = R"(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+               _____   
+              /      .  
+             |       | 
+             |       | 
+              ._____/ 
+
+
+
+
+    )";
+    birdArt = R"(
+             aaaaaaaaaa
+          aaaa         a:.
+        aa                :
+       a        {o}\` , =;;:
+      a      //(       =     \
+     a      //(         |    |
+    a  '''' //          |    |
+   a   \\      //==..a\/
+  a //          Y a\\
+ a//8888       YY   aaaaaaa
+a88\\\``````   YY  aa///2aaaa
+a8888888\\\888  a\\5\\\5\aaa
+a(....88888     a//////3//////aa
+a(..8888 '''''' 'aa\\\5\\\\\\2\aa
+ a ((         YY aa////7///6//aa
+  aa\\\\      YYY aaa\\\2\\\\aaa
+    a        bbbb    aaa///3/7/aa
+     aa      ''''''''''aa\4\\\\\a
+      a\\   \\       ....aa\\\\\\
+       a  \\  \\    ` . . . a\\\\\\
+        aa' ' ' YYY\\\\\  \\\\a\\\\\
+           (aa ....|    |  bbbb\\\\\
+            aaaaaaa( (  //bbbbbbb/"""""""\
+              //    ""// aaaaa// /\ ;\\ ;\\
+             //       //         \\\ ;\\ ;\\
+            //       //          \\ ;\\ ;\\ ;\\
+           //       //           \\\ ;\\\ ;\\ ;\\
+   //----//-------//---//----|   \\ ;\\ ;\\ ;\\\ ;\\
+  //    //       //    //
+    )";
+}
+
+string UIRenderer::drawBar(int value, int width) {
+    string bar = "[";
+    int pos = (value * width) / 100;
+    for (int i = 0; i < width; ++i) {
+        if (i < pos) bar += "■";
+        else bar += " ";
+    }
+    bar += "] " + to_string(value) + "%";
+    return bar;
+}
+void UIRenderer::StatsRender(string name, int mainSat, int stress, int clean, int ful, int trn) {
+    system("cls");
+
+    cout << " [" << name << "의 상태]" << endl;
+    cout << " 만족도   " << drawBar(mainSat, 50) << endl << endl;
+
+    cout << " 스트레스 " << drawBar(stress, 20) << "   ";
+    cout << " 청결도   " << drawBar(clean, 20) << endl;
+    cout << " 포만감   " << drawBar(ful, 20) << "   ";
+    cout << " 훈련도   " << drawBar(trn, 20) << endl;
+    cout << "\n------------------------------------------------------------\n";
+}
+void UIRenderer::ArtRender(int growthStage, int Action) {
+    //추후 선택한 행동에 따라서 이미지도 바뀔 예정 (Action)
+    string Art;
+
+    if (growthStage <= 0) {
+        Art = eggArt;
+    }
+    else {
+        Art = birdArt;
+    }
+    cout << Art << endl;
+}
+void UIRenderer::ChioceRender(int week, int actions) {
+    cout << "------------------------------------------------------------" << endl;
+    cout << " 현재: " << week << "주차 | 남은 행동: " << actions << "회" << endl;
+
+    //엑션 메니저 완성이 되면 현재주차에 해당하는 선택지를 받아서 출력할 예정
+}
+
