@@ -1,11 +1,13 @@
 #include <iostream>
 #include <string>
+#include <thread>
+#include <chrono>
 #include "UIRenderer.h"
 using namespace std;
 
 UIRenderer::UIRenderer() {
     //아스키 아트 예시 추후 선택지에 따라서 애니매이션을 넣은다면 간결화 및 더 많은 아트 필요
-    testeggArt = R"(⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+    eggArt = R"(⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -38,7 +40,7 @@ UIRenderer::UIRenderer() {
     
     
     
-    testArt1 = R"(
+    infantArt = R"(
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -68,7 +70,7 @@ UIRenderer::UIRenderer() {
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 
     )";
-     testArt2 = R"(
+     childAltArt = R"(
 
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -98,7 +100,7 @@ UIRenderer::UIRenderer() {
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 
     )";
-    testArt3 = R"(
+    childArt = R"(
 
         
 
@@ -128,7 +130,7 @@ UIRenderer::UIRenderer() {
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 
     )";
-    testArt4 = R"(
+    teenArt = R"(
 
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -159,7 +161,7 @@ UIRenderer::UIRenderer() {
 
     )";
 
-    testArt5 = R"(
+    adultArt = R"(
 
     )";
 
@@ -208,6 +210,41 @@ string UIRenderer::drawBar(int value, int width) {
     bar += "] " + to_string(value) + "%";
     return bar;
 }
+
+void UIRenderer::SlowPrint(const string& text, bool newLine, int charDelayMs, int lineDelayMs) {
+    for (size_t i = 0; i < text.size();) {
+        unsigned char ch = static_cast<unsigned char>(text[i]);
+        size_t charLength = 1;
+
+        if ((ch & 0x80) == 0x00) {
+            charLength = 1;
+        }
+        else if ((ch & 0xE0) == 0xC0) {
+            charLength = 2;
+        }
+        else if ((ch & 0xF0) == 0xE0) {
+            charLength = 3;
+        }
+        else if ((ch & 0xF8) == 0xF0) {
+            charLength = 4;
+        }
+
+        if (i + charLength > text.size()) {
+            charLength = 1;
+        }
+
+        cout << text.substr(i, charLength) << flush;
+        i += charLength;
+        this_thread::sleep_for(chrono::milliseconds(charDelayMs));
+    }
+
+    if (newLine) {
+        cout << endl;
+    }
+
+    this_thread::sleep_for(chrono::milliseconds(lineDelayMs));
+}
+
 void UIRenderer::StatsRender(string name, int mainSat, int stress, int clean, int ful, int trn) {
     system("cls");
 
@@ -222,15 +259,29 @@ void UIRenderer::StatsRender(string name, int mainSat, int stress, int clean, in
 }
 void UIRenderer::ArtRender(int growthStage, int Action) {
     //추후 선택한 행동에 따라서 이미지도 바뀔 예정 (Action)
-    string Art;
-    //testeggArt
-    //testArt1
-    if (growthStage <= 0) {
-        Art = testeggArt;
+    string Art = eggArt;
+
+    switch (growthStage) {
+    case 0:
+        Art = eggArt;
+        break;
+    case 1:
+        Art = infantArt;
+        break;
+    case 2:
+        Art = childArt;
+        break;
+    case 3:
+        Art = teenArt;
+        break;
+    case 4:
+        Art = adultArt;
+        break;
+    default:
+        Art = adultArt;
+        break;
     }
-    else {
-        Art = testArt1;
-    }
+
     cout << Art << endl;
 }
 void UIRenderer::ChioceRender(int week, int actions) {
@@ -238,5 +289,24 @@ void UIRenderer::ChioceRender(int week, int actions) {
     cout << " 현재: " << week << "주차 | 남은 행동: " << actions << "회" << endl;
 
     //엑션 메니저 완성이 되면 현재주차에 해당하는 선택지를 받아서 출력할 예정
+}
+
+void UIRenderer::ActionResultRender(const string& actionName, const StatChange& statChange, const string& item, bool isRebellious, const string& birdName) {
+    cout << "---------------------------------------------------------------------" << endl;
+    SlowPrint("  > " + actionName + " 을(를) 했습니다.");
+
+    string resultText = "    포만감 " + string(statChange.fullness >= 0 ? "+" : "") + to_string(statChange.fullness)
+        + "  청결도 " + string(statChange.cleanliness >= 0 ? "+" : "") + to_string(statChange.cleanliness)
+        + "  훈련도 " + string(statChange.training >= 0 ? "+" : "") + to_string(statChange.training)
+        + "  스트레스 " + string(statChange.stress >= 0 ? "+" : "") + to_string(statChange.stress);
+    SlowPrint(resultText);
+
+    if (!item.empty()) {
+        SlowPrint("  ★ " + item);
+    }
+
+    if (isRebellious) {
+        SlowPrint("  !! " + birdName + "(이)가 반항합니다! 스트레스가 추가 상승합니다.");
+    }
 }
 
