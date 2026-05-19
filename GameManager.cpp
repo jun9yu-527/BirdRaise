@@ -38,32 +38,32 @@ void GameManager::initializeGame() {
     cout << "                    새  키  우  기                         " << endl;
     cout << "============================================================" << endl;
     cout << endl;
-    cout << "  오늘도 평범한 하루가 될 것 같았다." << endl;
-    cout << "  그런데 길을 걷다가 수풀 사이에서" << endl;
-    cout << "  작고 따뜻한 무언가를 발견했다." << endl;
+    ui.SlowPrint("  오늘도 평범한 하루가 될 것 같았다.");
+    ui.SlowPrint("  그런데 길을 걷다가 수풀 사이에서");
+    ui.SlowPrint("  작고 따뜻한 무언가를 발견했다.");
     cout << endl;
 
     // UIRenderer 의 eggArt 를 활용 — ArtRender(0, 0) 이 알 아트 출력
     ui.ArtRender(0, 0);
 
-    cout << "  ......알이었다." << endl;
-    cout << "  버려진 것인지, 떨어진 것인지 알 수 없지만" << endl;
-    cout << "  이 작은 생명을 그냥 지나칠 수는 없었다." << endl;
+    ui.SlowPrint("  ......알이었다.");
+    ui.SlowPrint("  버려진 것인지, 떨어진 것인지 알 수 없지만");
+    ui.SlowPrint("  이 작은 생명을 그냥 지나칠 수는 없었다.");
     cout << endl;
-    cout << "  앞으로 8주, 최선을 다해 이 새를 돌봐주세요." << endl;
+    ui.SlowPrint("  앞으로 8주, 최선을 다해 이 새를 돌봐주세요.");
     cout << "============================================================" << endl;
     cout << endl;
 
     string birdName;
-    cout << "  새에게 이름을 붙여주세요: ";
+    ui.SlowPrint("  새에게 이름을 붙여주세요: ", false);
     cin >> birdName;
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
     cout << endl;
-    cout << "  [" << birdName << "] (이)라는 이름을 붙여주었다." << endl;
-    cout << "  새로운 인연이 시작된다..." << endl;
+    ui.SlowPrint("  [" + birdName + "] (이)라는 이름을 붙여주었다.");
+    ui.SlowPrint("  새로운 인연이 시작된다...");
     cout << endl;
-    cout << "  아무 키나 눌러 시작" << endl;
+    ui.SlowPrint("  아무 키나 눌러 시작");
     cin.get();
 
     bird = new GameEntity(birdName);
@@ -119,27 +119,27 @@ void GameManager::processTurn() {
     // 7) 스탯 반영
     bird->update_stats(sc.fullness, sc.cleanliness, sc.training, sc.stress);
 
-    // 8) 결과 메시지 출력
-    cout << endl;
-    cout << "  > " << selectedAction << " 을(를) 했습니다." << endl;
-    cout << "    포만감 " << (sc.fullness >= 0 ? "+" : "") << sc.fullness
-        << "  청결도 " << (sc.cleanliness >= 0 ? "+" : "") << sc.cleanliness
-        << "  훈련도 " << (sc.training >= 0 ? "+" : "") << sc.training
-        << "  스트레스 " << (sc.stress >= 0 ? "+" : "") << sc.stress
-        << endl;
-
-    // 9) 확률적 아이템 효과 처리
+    // 8) 확률적 아이템 효과 처리
     string item = actionManager.get_random_item();
-    if (!item.empty()) {
-        cout << "  ★ " << item << endl;
-    }
 
-    // 10) 반항 체크 — 유아기(stageInt >= 1) 이상일 때만 체크
+    // 9) 반항 체크 — 유아기(stageInt >= 1) 이상일 때만 체크
+    bool isRebellious = false;
     if (stageInt >= 1 && bird->is_rebellious()) {
-        cout << "  !! " << bird->getName()
-            << "(이)가 반항합니다! 스트레스가 추가 상승합니다." << endl;
+        isRebellious = true;
         bird->update_stats(0, 0, 0, 10);
     }
+
+    // 10) 선택지 목록을 지우고, 변화가 반영된 화면을 다시 출력
+    ui.StatsRender(
+        bird->getName(),
+        static_cast<int>(bird->get_satisfaction()),
+        bird->getStress(),
+        bird->getCleanliness(),
+        bird->getFullness(),
+        bird->getTraining()
+    );
+    ui.ArtRender(stageInt, 0);
+    ui.ActionResultRender(selectedAction, sc, item, isRebellious, bird->getName());
 
     // 11) 상태 체크 (사망 / 도주 조건) — 알(stageInt == 0) 이 아닐 때만
     if (stageInt >= 1) {
