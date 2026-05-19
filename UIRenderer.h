@@ -18,6 +18,12 @@ class UIRenderer {
 private:
     string eggArt;
     string birdArt;
+    string testeggArt;
+    string testArt1;
+    string testArt2;
+    string testArt3;
+    string testArt4;
+    string testArt5;
 public:
     UIRenderer();
     string drawBar(int value, int twidth);
