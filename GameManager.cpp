@@ -114,6 +114,13 @@ void GameManager::processTurn() {
 
     // 6) 선택한 행동의 수치 변화 가져오기
     string selectedAction = actions[choice - 1];
+    if (selectedAction == "방치하기")
+    {
+        if (engine->get_current_week() == 1)
+        {
+            bird->setAbandonedEgg(true);
+        }
+    }
     StatChange sc = actionManager.get_action_effects(selectedAction);
 
     // 7) 스탯 반영
@@ -170,7 +177,15 @@ void GameManager::handleEnding() {
     system("cls");
 
     GameState state = engine->get_game_state();
-    float     satisfaction = bird->get_satisfaction();
+
+    // 최종 만족도
+    float sat = bird->get_satisfaction();
+    // 포만감
+    int full = bird->getFullness();
+    // 훈련도
+    int train = bird->getTraining();
+    // 청결도
+    int clean = bird->getCleanliness();
 
     // 엔딩에서도 현재 단계 아트 출력
     ui.ArtRender(stageInt, 0);
@@ -180,26 +195,112 @@ void GameManager::handleEnding() {
     cout << "============================================================" << endl;
     cout << endl;
     cout << "  새의 이름  : " << bird->getName() << endl;
-    cout << "  최종 만족도: " << satisfaction << " / 100" << endl;
+    cout << "  최종 만족도: " << sat << " / 100" << endl;
     cout << endl;
 
-    if (state == GameState::StarvDead) {
-        cout << "새가 굶주림으로 인해 아사했습니다..." << endl;
-        cout << "         [ 아사 엔딩 ]" << endl;
 
+    // 1. 특수 조건 엔딩 (알 방치 / 히든 / 스타 / 모델)
+    if (bird->getAbandonedEgg())
+    {
+        cout << "  " << bird->getName() << "(이)가 갑자기 생각이 났다." << endl;
+        cout << "  '오랜만에 상태 확인을 해볼까'" << endl;
+        cout << "  '...어라? 이게 왜...'" << endl;
+        cout << "  '화석이 되어버린거야..?'" << endl;
+        cout << "  " << bird->getName() << "(이)는 부화하지 못하고 화석이 되어버렸다." << endl;
+        cout << endl;
+        cout << "         [ 히든 엔딩 - 화석이 되어버린 알 ]" << endl;
+        return;
     }
-    else if (state == GameState::SickDead) {
-        cout << "새가 질병으로 인해 병사했습니다..." << endl;
-        cout << "         [ 병사 엔딩 ]" << endl;
 
+    if (full >= 100 && sat >= 100)
+    {
+        cout << "  " << bird->getName() << "(은)는 너무 많이 먹고 움직이지 않아\n" << endl;
+        cout << "  날지 못하게 되었다.\n" << endl;
+        cout << "  '다이어트 좀 해야되는거 아니야?'" << endl;
+        cout << "  " << bird->getName() << "(은)는 당신과 함께하는게 행복한 듯 하다.\n" << endl;
+        cout << endl;
+        cout << "         [ 히든 엔딩 - 새이기를 포기한거야? ]" << endl;
+        return;
     }
-    else if (state == GameState::OverRan) {
-        cout << "새가 스트레스를 견디지 못하고 자유를 찾아 떠났습니다!" << endl;
-        cout << "         [ 도주 엔딩 ]" << endl;
 
+    if (train >= 100 && sat >= 100)
+    {
+        cout << "  " << bird->getName() << "의 묘기를 찍은 영상이 조회수가 1억뷰가 넘었다.\n" << endl;
+        cout << "  '이대로 인기스타 되는거 아니야?'\n" << endl;
+        cout << "  세계 곳곳에서 방송 출연 제의를 받게 되었다." << endl;
+        cout << "  " << bird->getName() << "(은)는 세계적인 인기스타가 되었다.\n" << endl;
+        cout << endl;
+        cout << "         [ 히든 엔딩 - 너 덕분에 내가 인생 폈다! ]" << endl;
+        return;
     }
-    else {
-        if (satisfaction >= 75) {
+
+    if (clean >= 100 && sat >= 0)
+    {
+        cout << "  " << bird->getName() << "의 털이 아름답게 빛나기 시작했다.\n" << endl;
+        cout << "  인별에 사진을 올렸는데 모델 제의를 받게 되었다.\n" << endl;
+        cout << "  사진 작가 - '진짜 이렇게 아름다운 새는 처음 봅니다.'" << endl;
+        cout << "  " << bird->getName() << "(은)는 세계적인 조류 잡지의 모델이 되었다.\n" << endl;
+        cout << endl;
+        cout << "         [ 히든 엔딩 - 조류 잡지 모델이 되었다. ]" << endl;
+        return;
+    }
+
+
+    // 2. 게임 상태 이상 엔딩 (아사 / 병사 / 도주)
+    if (state == GameState::StarvDead)
+    {
+        cout << "  " << bird->getName() << "(이)가 굶주림으로 인해 아사 했습니다..." << endl;
+        cout << "  내가 너무 무관심 했나.." << endl;
+        cout << "  다음 생엔 더 좋은 집사 만나서 행복하게 살아!" << endl;
+        cout << endl;
+        cout << "         [ 아사 엔딩 - 잘 챙겨주지 못해서 미안해 ]" << endl;
+        return;
+    }
+
+    if (state == GameState::SickDead)
+    {
+        cout << "  " << bird->getName() << "(이)가 질병으로 인해 병사했습니다..." << endl;
+        cout << "  '병원에 데려가지 못해서 미안해.'" << endl;
+        cout << endl;
+        cout << "         [ 병사 엔딩 - 집이 언제 이렇게 더러워졌지? ]" << endl;
+        return;
+    }
+
+    if (state == GameState::OverRan)
+    {
+        cout << "  " << bird->getName() << "(이)가 스트레스를 견디지 못하고 자유를 찾아 떠났습니다!" << endl;
+        cout << "  '어? 어디갔지..??'" << endl;
+        cout << "  '창문을 열고 날아갔구나..'" << endl;
+        cout << "  '행복하고 자유로운 삶을 살 길 바랄게!'" << endl;
+        cout << endl;
+        cout << "         [ 도주 엔딩 - 막상 떠나니 아쉽네.. ]" << endl;
+        return;
+    }
+
+
+    // 3. 만족도(sat) 기준 일반 엔딩
+    if (sat <= 25)
+    {
+        cout << "  " << bird->getName() << "(이)가 날아갔다." << endl;
+        cout << "  저 멀리, 한 번도 돌아보지 않고." << endl;
+        cout << "  ...더 잘 해줄 수 있었는데." << endl;
+        cout << endl;
+        cout << "         [ 배드 엔딩 - 아쉬운 이별 ]" << endl;
+    }
+    else if (sat <= 50)
+    {
+        cout << "  " << bird->getName() << "(이)가 힘차게 날갯짓을 하며" << endl;
+        cout << "  드넓은 하늘 속으로 사라졌다." << endl;
+        cout << "  잘 가, 잘 살아!" << endl;
+        cout << endl;
+        cout << "         [ 노말 엔딩 - 아쉬운 이별 ]" << endl;
+    }
+    else if (sat <= 75)
+    {
+        srand(time(NULL));
+
+        if (rand() % 2)
+        {
             cout << "  " << bird->getName() << "(이)가 하늘로 날아오르려다..." << endl;
             cout << "  이내 다시 당신의 어깨 위로 내려앉는다." << endl;
             cout << "  '...어라? 이게 아닌데.'" << endl;
@@ -207,20 +308,23 @@ void GameManager::handleEnding() {
             cout << endl;
             cout << "         [ 굿 엔딩? - 예상치 못한 동거 ]" << endl;
         }
-        else if (satisfaction >= 50) {
+        else
+        {
             cout << "  " << bird->getName() << "(이)가 힘차게 날갯짓을 하며" << endl;
             cout << "  드넓은 하늘 속으로 사라졌다." << endl;
             cout << "  잘 가, 잘 살아!" << endl;
             cout << endl;
             cout << "         [ 굿 엔딩 - 방생 성공 ]" << endl;
         }
-        else {
-            cout << "  " << bird->getName() << "(이)가 날아갔다." << endl;
-            cout << "  저 멀리, 한 번도 돌아보지 않고." << endl;
-            cout << "  ...더 잘 해줄 수 있었는데." << endl;
-            cout << endl;
-            cout << "         [ 노말 엔딩 - 아쉬운 이별 ]" << endl;
-        }
+    }
+    else
+    {
+        cout << "  " << bird->getName() << "(이)가 날아가지 않고 옆에 머물렀다." << endl;
+        cout << "  나랑 떨어지기 싫다는 것일까?" << endl;
+        cout << "  나도 정이 많이 들긴 했어." << endl;
+        cout << "  기왕 이렇게 된거 계속 같이 살자!" << endl;
+        cout << endl;
+        cout << "         [ 굿 엔딩 - 앞으로도 잘 부탁해 ]" << endl;
     }
 
     cout << endl;

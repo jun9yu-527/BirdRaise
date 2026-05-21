@@ -24,6 +24,7 @@ private:
     GrowthStage stage;         // 현재 성장 단계 
     bool is_alive;             // 생존 여부
     bool is_sick;              // 질병 여부
+	bool abandonedEgg;         // 알 포기 여부 (특수 엔딩 조건)
 
 public:
     // 생성자: 알 상태로 시작, 초기 스트레스 100 
@@ -40,6 +41,15 @@ public:
 
     // 반항 확률 체크
     bool is_rebellious() const;
+
+    // 알 포기 여부 체크
+    bool getAbandonedEgg() const {
+        return abandonedEgg;
+    }
+
+    void setAbandonedEgg(bool v) {
+        abandonedEgg = v;
+    }
 
     // Getter/Setter (UI 및 로직용)
     string getName() const { return name; }

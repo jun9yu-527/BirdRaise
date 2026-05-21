@@ -6,7 +6,7 @@ using namespace std;
 ActionManager::ActionManager() {
     // 데이터 초기화
     // 스테이지 정의: 알, 유아기, 유년기, 청소년기, 성체
-    stage_actions["알"] = { "품어주기", "온도조절", "클래식 들려주기" };
+    stage_actions["알"] = { "품어주기", "온도조절", "클래식 들려주기","방치하기"};
     stage_actions["유아기"] = { "이유식 먹이기", "낮잠 자기", "깃털 고르기" };
     stage_actions["유년기"] = { "먹이 주기", "간단한 훈련", "놀아주기" };
     stage_actions["청소년기"] = { "고급 먹이", "비행 기초", "목욕하기" };
@@ -16,6 +16,7 @@ ActionManager::ActionManager() {
     stat_table["품어주기"] = { 0, 0, 0, -10 };
     stat_table["온도조절"] = { 0, -5, 0, -5 };
     stat_table["클래식 들려주기"] = { 0, 0, 5, -15 };
+    stat_table["방치하기"] = { 0, 0, 0, 0 };
 
     stat_table["이유식 먹이기"] = { 20, -5, 0, -5 };
     stat_table["낮잠 자기"] = { -5, 0, 0, -10 };
