@@ -25,6 +25,8 @@ private:
     bool is_alive;             // 생존 여부
     bool is_sick;              // 질병 여부
 	bool abandonedEgg;         // 알 포기 여부 (특수 엔딩 조건)
+    int eggActionCount;        // 알 단계에서 행동한 횟수
+    int eggIgnoreCount;        // 알 단계에서 방치한 횟수
 
 public:
     // 생성자: 알 상태로 시작, 초기 스트레스 100 
@@ -47,8 +49,12 @@ public:
         return abandonedEgg;
     }
 
-    void setAbandonedEgg(bool v) {
-        abandonedEgg = v;
+    void recordEggAction(bool ignored) {
+        eggActionCount++;
+        if (ignored) {
+            eggIgnoreCount++;
+        }
+        abandonedEgg = (eggActionCount >= 5 && eggIgnoreCount == eggActionCount);
     }
 
     // Getter/Setter (UI 및 로직용)
