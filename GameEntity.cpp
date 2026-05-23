@@ -9,7 +9,7 @@ using namespace std;
 GameEntity::GameEntity(string birdName) 
     : name(birdName), fullness(50), cleanliness(100), 
       training(0), stress(100), stage(GrowthStage::EGG), 
-      is_alive(true), is_sick(false), abandonedEgg(false) {}
+      is_alive(true), is_sick(false), abandonedEgg(false), eggActionCount(0), eggIgnoreCount(0) {}
 
 // 수치 변화 적용 메서드
 void GameEntity::update_stats(int f, int c, int t, int s) {
