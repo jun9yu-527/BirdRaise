@@ -114,12 +114,9 @@ void GameManager::processTurn() {
 
     // 6) 선택한 행동의 수치 변화 가져오기
     string selectedAction = actions[choice - 1];
-    if (selectedAction == "방치하기")
+    if (engine->get_current_week() == 1)
     {
-        if (engine->get_current_week() == 1)
-        {
-            bird->setAbandonedEgg(true);
-        }
+        bird->recordEggAction(selectedAction == "방치하기");
     }
     StatChange sc = actionManager.get_action_effects(selectedAction);
 
@@ -136,8 +133,9 @@ void GameManager::processTurn() {
         bird->update_stats(0, 0, 0, 10);
     }
 
-    // 10) 선택지 목록을 지우고, 변화가 반영된 화면을 다시 출력
-    ui.StatsRender(
+    // 10) 선택지 목록을 지우고, 변화가 반영된 스탯과 행동 아트를 출력
+    ui.ActionArtRender(
+        selectedAction,
         bird->getName(),
         static_cast<int>(bird->get_satisfaction()),
         bird->getStress(),
@@ -145,7 +143,6 @@ void GameManager::processTurn() {
         bird->getFullness(),
         bird->getTraining()
     );
-    ui.ArtRender(stageInt, 0);
     ui.ActionResultRender(selectedAction, sc, item, isRebellious, bird->getName());
 
     // 11) 상태 체크 (사망 / 도주 조건) — 알(stageInt == 0) 이 아닐 때만
@@ -187,9 +184,6 @@ void GameManager::handleEnding() {
     // 청결도
     int clean = bird->getCleanliness();
 
-    // 엔딩에서도 현재 단계 아트 출력
-    ui.ArtRender(stageInt, 0);
-
     cout << "============================================================" << endl;
     cout << "                      게  임  종  료                       " << endl;
     cout << "============================================================" << endl;
@@ -199,9 +193,10 @@ void GameManager::handleEnding() {
     cout << endl;
 
 
-    // 1. 특수 조건 엔딩 (알 방치 / 히든 / 스타 / 모델)
+    // 1. 알을 1주차 내내 방치한 경우는 다른 상태보다 화석 엔딩을 우선한다.
     if (bird->getAbandonedEgg())
     {
+        ui.EndingArtRender("fossilEgg");
         cout << "  " << bird->getName() << "(이)가 갑자기 생각이 났다." << endl;
         cout << "  '오랜만에 상태 확인을 해볼까'" << endl;
         cout << "  '...어라? 이게 왜...'" << endl;
@@ -212,8 +207,44 @@ void GameManager::handleEnding() {
         return;
     }
 
+    // 2. 게임 상태 이상 엔딩 (아사 / 병사 / 도주)
+    if (state == GameState::StarvDead)
+    {
+        ui.EndingArtRender("starvation");
+        cout << "  " << bird->getName() << "(이)가 굶주림으로 인해 아사 했습니다..." << endl;
+        cout << "  내가 너무 무관심 했나.." << endl;
+        cout << "  다음 생엔 더 좋은 집사 만나서 행복하게 살아!" << endl;
+        cout << endl;
+        cout << "         [ 아사 엔딩 - 잘 챙겨주지 못해서 미안해 ]" << endl;
+        return;
+    }
+
+    if (state == GameState::SickDead)
+    {
+        ui.EndingArtRender("sickDead");
+        cout << "  " << bird->getName() << "(이)가 질병으로 인해 병사했습니다..." << endl;
+        cout << "  '병원에 데려가지 못해서 미안해.'" << endl;
+        cout << endl;
+        cout << "         [ 병사 엔딩 - 집이 언제 이렇게 더러워졌지? ]" << endl;
+        return;
+    }
+
+    if (state == GameState::OverRan)
+    {
+        ui.EndingArtRender("escapeFly");
+        cout << "  " << bird->getName() << "(이)가 스트레스를 견디지 못하고 자유를 찾아 떠났습니다!" << endl;
+        cout << "  '어? 어디갔지..??'" << endl;
+        cout << "  '창문을 열고 날아갔구나..'" << endl;
+        cout << "  '행복하고 자유로운 삶을 살 길 바랄게!'" << endl;
+        cout << endl;
+        cout << "         [ 도주 엔딩 - 막상 떠나니 아쉽네.. ]" << endl;
+        return;
+    }
+
+    // 3. 특수 조건 엔딩 (히든 / 스타 / 모델)
     if (full >= 100 && sat >= 100)
     {
+        ui.EndingArtRender("fatBird");
         cout << "  " << bird->getName() << "(은)는 너무 많이 먹고 움직이지 않아\n" << endl;
         cout << "  날지 못하게 되었다.\n" << endl;
         cout << "  '다이어트 좀 해야되는거 아니야?'" << endl;
@@ -225,6 +256,7 @@ void GameManager::handleEnding() {
 
     if (train >= 100 && sat >= 100)
     {
+        ui.EndingArtRender("ttStar");
         cout << "  " << bird->getName() << "의 묘기를 찍은 영상이 조회수가 1억뷰가 넘었다.\n" << endl;
         cout << "  '이대로 인기스타 되는거 아니야?'\n" << endl;
         cout << "  세계 곳곳에서 방송 출연 제의를 받게 되었다." << endl;
@@ -234,8 +266,9 @@ void GameManager::handleEnding() {
         return;
     }
 
-    if (clean >= 100 && sat >= 0)
+    if (clean >= 100 && sat >= 80)
     {
+        ui.EndingArtRender("modelBird");
         cout << "  " << bird->getName() << "의 털이 아름답게 빛나기 시작했다.\n" << endl;
         cout << "  인별에 사진을 올렸는데 모델 제의를 받게 되었다.\n" << endl;
         cout << "  사진 작가 - '진짜 이렇게 아름다운 새는 처음 봅니다.'" << endl;
@@ -246,41 +279,10 @@ void GameManager::handleEnding() {
     }
 
 
-    // 2. 게임 상태 이상 엔딩 (아사 / 병사 / 도주)
-    if (state == GameState::StarvDead)
-    {
-        cout << "  " << bird->getName() << "(이)가 굶주림으로 인해 아사 했습니다..." << endl;
-        cout << "  내가 너무 무관심 했나.." << endl;
-        cout << "  다음 생엔 더 좋은 집사 만나서 행복하게 살아!" << endl;
-        cout << endl;
-        cout << "         [ 아사 엔딩 - 잘 챙겨주지 못해서 미안해 ]" << endl;
-        return;
-    }
-
-    if (state == GameState::SickDead)
-    {
-        cout << "  " << bird->getName() << "(이)가 질병으로 인해 병사했습니다..." << endl;
-        cout << "  '병원에 데려가지 못해서 미안해.'" << endl;
-        cout << endl;
-        cout << "         [ 병사 엔딩 - 집이 언제 이렇게 더러워졌지? ]" << endl;
-        return;
-    }
-
-    if (state == GameState::OverRan)
-    {
-        cout << "  " << bird->getName() << "(이)가 스트레스를 견디지 못하고 자유를 찾아 떠났습니다!" << endl;
-        cout << "  '어? 어디갔지..??'" << endl;
-        cout << "  '창문을 열고 날아갔구나..'" << endl;
-        cout << "  '행복하고 자유로운 삶을 살 길 바랄게!'" << endl;
-        cout << endl;
-        cout << "         [ 도주 엔딩 - 막상 떠나니 아쉽네.. ]" << endl;
-        return;
-    }
-
-
-    // 3. 만족도(sat) 기준 일반 엔딩
+    // 4. 만족도(sat) 기준 일반 엔딩
     if (sat <= 25)
     {
+        ui.EndingArtRender("escapeFly");
         cout << "  " << bird->getName() << "(이)가 날아갔다." << endl;
         cout << "  저 멀리, 한 번도 돌아보지 않고." << endl;
         cout << "  ...더 잘 해줄 수 있었는데." << endl;
@@ -289,6 +291,7 @@ void GameManager::handleEnding() {
     }
     else if (sat <= 50)
     {
+        ui.EndingArtRender("returnNature");
         cout << "  " << bird->getName() << "(이)가 힘차게 날갯짓을 하며" << endl;
         cout << "  드넓은 하늘 속으로 사라졌다." << endl;
         cout << "  잘 가, 잘 살아!" << endl;
@@ -301,6 +304,7 @@ void GameManager::handleEnding() {
 
         if (rand() % 2)
         {
+            ui.EndingArtRender("shoulderFriend");
             cout << "  " << bird->getName() << "(이)가 하늘로 날아오르려다..." << endl;
             cout << "  이내 다시 당신의 어깨 위로 내려앉는다." << endl;
             cout << "  '...어라? 이게 아닌데.'" << endl;
@@ -310,6 +314,7 @@ void GameManager::handleEnding() {
         }
         else
         {
+            ui.EndingArtRender("happyFly");
             cout << "  " << bird->getName() << "(이)가 힘차게 날갯짓을 하며" << endl;
             cout << "  드넓은 하늘 속으로 사라졌다." << endl;
             cout << "  잘 가, 잘 살아!" << endl;
@@ -319,6 +324,7 @@ void GameManager::handleEnding() {
     }
     else
     {
+        ui.EndingArtRender("shoulderFriend");
         cout << "  " << bird->getName() << "(이)가 날아가지 않고 옆에 머물렀다." << endl;
         cout << "  나랑 떨어지기 싫다는 것일까?" << endl;
         cout << "  나도 정이 많이 들긴 했어." << endl;
