@@ -84,6 +84,7 @@ void GameEngine::run_game_loop() {
 // 실제 행동 선택과 스탯 반영은 GameManager::processTurn() 이 담당하고,
 // 이 메서드는 행동 후 게임 상태를 재평가하는 역할을 수행
 void GameEngine::process_action(int choice) {
+    (void)choice;
     game_state = evaluate_game_state();
 }
 
