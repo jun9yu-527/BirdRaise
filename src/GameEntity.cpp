@@ -26,12 +26,14 @@ void GameEntity::check_status() {
     if (fullness <= 0) {
         is_alive = false;
         cout << "새가 굶주림으로 인해 아사했습니다..." << endl;
+        return;
     }
     
     // 사망 조건: 청결도 0일 때 확정 사망
     if (cleanliness <= 0) {
         is_alive = false;
         cout << "새가 질병으로 인해 병사했습니다..." << endl;
+        return;
     }
 
     // 질병 발생: 청결도 25 이하
