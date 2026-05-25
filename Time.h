@@ -11,12 +11,26 @@
 constexpr int MAX_WEEKS = 8;
 constexpr int ACTIONS_PER_WEEK = 5;
 
-// 게임 상태
 enum class GameState {
     Running,
+
+    // 기존 사망
     StarvDead,  // 아사 엔딩
-	SickDead,  // 병사 엔딩
+    SickDead,  // 병사 엔딩
     OverRan,   // 도주 엔딩
+
+    // 일반 엔딩
+    FoundEnding,       // 방에 쓰러진 채 발견
+    ReleaseEnding,     // 자연 복귀
+    RandomRelease,     // 50%
+    StayEnding,        // 계속 키우기
+
+    // 특수 엔딩
+    HiddenEnding,
+    StarEnding,
+    ModelEnding,
+    EggAbandon,
+
     Clear      // 클리어
 };
 

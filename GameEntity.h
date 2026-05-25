@@ -25,6 +25,10 @@ private:
     bool is_alive;             // 생존 여부
     bool is_sick;              // 질병 여부
 
+    bool abandonedEgg;         // 알 단계에서 방치 여부 (화석 엔딩 조건)
+    int  eggActionCount;       // 알 단계 총 행동 횟수
+    int  eggIgnoreCount;       // 알 단계 방치하기 횟수
+
 public:
     // 생성자: 알 상태로 시작, 초기 스트레스 100 
     GameEntity(string birdName);
@@ -49,4 +53,14 @@ public:
     int getStress() const { return stress; }
     bool getIsAlive() const { return is_alive; }
     void setStage(GrowthStage s) { stage = s; }
+
+    // 알 단계 방치 기록 — isIgnore: 방치하기 선택 시 true
+    void recordEggAction(bool isIgnore) {
+        eggActionCount++;
+        if (isIgnore) eggIgnoreCount++;
+        // 5번 행동 중 모두 방치하기면 abandonedEgg = true
+        if (eggActionCount >= 5 && eggIgnoreCount >= 5) abandonedEgg = true;
+    }
+
+    bool getAbandonedEgg() const { return abandonedEgg; }
 };

@@ -9,7 +9,7 @@ using namespace std;
 GameEntity::GameEntity(string birdName) 
     : name(birdName), fullness(50), cleanliness(100), 
       training(0), stress(100), stage(GrowthStage::EGG), 
-      is_alive(true), is_sick(false) {}
+      is_alive(true), is_sick(false), abandonedEgg(false), eggActionCount(0), eggIgnoreCount(0) {}
 
 // 수치 변화 적용 메서드
 void GameEntity::update_stats(int f, int c, int t, int s) {
@@ -45,9 +45,10 @@ void GameEntity::check_status() {
 }
 
 // 실시간 평균 만족도 계산
-// 공식: (포만감 + 청결도 + 훈련도 - 스트레스) / 4
+// 공식: (포만감 + 청결도 + 훈련도( 100  - 스트레스) / 4
 float GameEntity::get_satisfaction() const {
-    return (float)(fullness + cleanliness + training - stress) / 4.0f;
+    float total = fullness + cleanliness + training + (100 - stress);
+    return total / 4.0f;
 }
 
 // 반항 확률 체크 (스트레스 50 이상일 때 20% 확률)
