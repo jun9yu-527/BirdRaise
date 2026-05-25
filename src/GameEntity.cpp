@@ -1,4 +1,4 @@
-#include "GameEntity.h"
+#include "../include/GameEntity.h"
 #include <algorithm>
 #include <iostream>
 #include <cstdlib>

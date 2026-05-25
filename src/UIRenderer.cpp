@@ -2,7 +2,7 @@
 #include <string>
 #include <thread>
 #include <chrono>
-#include "UIRenderer.h"
+#include "../include/UIRenderer.h"
 using namespace std;
 
 UIRenderer::UIRenderer() {

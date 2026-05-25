@@ -1,5 +1,5 @@
 #include <windows.h>
-#include "GameManager.h"
+#include "../include/GameManager.h"
 #include <iostream>
 // 1. 이 헤더를 추가하세요.
 
