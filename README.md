@@ -143,7 +143,7 @@ BirdRaise.exe
 
 ---
 
-##️ 개발 환경
+## 개발 환경
 
 - **Language**: C++17
 - **Platform**: Windows Console
