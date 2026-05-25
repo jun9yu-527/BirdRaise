@@ -256,7 +256,7 @@ void GameManager::handleEnding() {
     {
         ui.EndingArtRender("escapeFly");
         cout << "  " << bird->getName() << "(이)가 스트레스를 견디지 못하고 자유를 찾아 떠났습니다!" << endl;
-        cout << "  '어? 어디갔지..?' '?'" << endl;
+        cout << "  '어? 어디갔지..??'" << endl;
         cout << "  '창문을 열고 날아갔구나..'" << endl;
         cout << "  '행복하고 자유로운 삶을 살 길 바랄게!'" << endl;
         cout << endl;
