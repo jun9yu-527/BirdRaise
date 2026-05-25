@@ -1,0 +1,119 @@
+[33mcommit d69b3703e63c808e686b97ed4bae5b5852df7c34[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mcyc[m[33m, [m[1;32mtest_p[m[33m)[m
+Author: stonpass <choiseungmin04@gmail.com>
+Date:   Sun May 24 00:36:32 2026 +0900
+
+    Update GameEntity.cpp
+
+[33mcommit be1310bbe9054f9b4c27ed03e3edea17ac948902[m
+Author: stonpass <choiseungmin04@gmail.com>
+Date:   Sun May 24 00:36:04 2026 +0900
+
+    Update GameEntity.h
+
+[33mcommit 4f0a7f59592c85c723cf3f7acef80c028d084e5c[m
+Author: stonpass <choiseungmin04@gmail.com>
+Date:   Sun May 24 00:35:20 2026 +0900
+
+    Update GameManager.cpp
+
+[33mcommit 4094a561883b225354cb77af25e3550b4c83cb77[m
+Author: stonpass <choiseungmin04@gmail.com>
+Date:   Sun May 24 00:32:58 2026 +0900
+
+    Update UIRenderer.cpp
+
+[33mcommit 345463fb51f3f40bb402de1dda97fb434211c220[m
+Author: stonpass <choiseungmin04@gmail.com>
+Date:   Sun May 24 00:32:41 2026 +0900
+
+    Update UIRenderer.h
+    
+    아트 추가
+
+[33mcommit ddbcbc0d8adca31b9b67fc9a3fc694f506a3fc53[m[33m ([m[1;31morigin/test[m[33m)[m
+Author: jun9yu-527 <2715jun@gmail.com>
+Date:   Thu May 21 14:03:33 2026 +0900
+
+    AddEnding
+
+[33mcommit c4e54596f1d79cda699e1859da8d540994ef2fc1[m
+Author: stonpass <choiseungmin04@gmail.com>
+Date:   Wed May 20 01:33:11 2026 +0900
+
+    Update UIRenderer.h
+    
+    텍스트 출력함수 추가
+
+[33mcommit 7cd73297ccac8e4b06726cac5e12680af94d7ef2[m
+Author: stonpass <choiseungmin04@gmail.com>
+Date:   Wed May 20 01:32:41 2026 +0900
+
+    Update GameManager.cpp
+    
+    텍스트 출력변경
+
+[33mcommit e9a692cfaafcf2a7c1750aabc6db7d408b77734c[m
+Author: stonpass <choiseungmin04@gmail.com>
+Date:   Wed May 20 01:31:27 2026 +0900
+
+    Update GameEntity.cpp
+
+[33mcommit 9b9e8d0a6b9c85aaf0d865d648e720099d0d4c36[m
+Author: stonpass <choiseungmin04@gmail.com>
+Date:   Wed May 20 01:30:52 2026 +0900
+
+    Update GameEntity.cpp
+
+[33mcommit 45f0c202fa0c4b1a35bd01b0922bb97de4eb629a[m
+Author: stonpass <choiseungmin04@gmail.com>
+Date:   Wed May 20 01:29:09 2026 +0900
+
+    Update UIRenderer.cpp
+    
+    텍스트 출력 함수 추가
+
+[33mcommit ce8d0dacfb7c6fa04dd6c34b5f5346395a29159e[m
+Author: stonpass <choiseungmin04@gmail.com>
+Date:   Tue May 19 22:57:49 2026 +0900
+
+    Update UIRenderer.h
+    
+    아트추가로 인한 헤더 변경1
+
+[33mcommit 80b6b736b9b7bfcf52b31b3e31087dee0773c248[m
+Author: stonpass <choiseungmin04@gmail.com>
+Date:   Tue May 19 22:56:28 2026 +0900
+
+    Update UIRenderer.cpp
+    
+    아트추가 테스트3
+
+[33mcommit 195f302e427644c59f446ab5808ec5269062dde6[m
+Author: stonpass <choiseungmin04@gmail.com>
+Date:   Tue May 19 22:22:14 2026 +0900
+
+    Update UIRenderer.cpp
+    
+    아스키아트추가2
+
+[33mcommit 2c8f9322a764f8191fac7e3f7675fce345f8e497[m
+Author: stonpass <choiseungmin04@gmail.com>
+Date:   Tue May 19 11:01:19 2026 +0900
+
+    Update UIRenderer.cpp
+    
+    아스크아트 추가(1)
+
+[33mcommit 614a399c7a5b7ea8fb3d0d4d9d6df651b09c1bf1[m
+Author: stonpass <choiseungmin04@gmail.com>
+Date:   Fri May 15 14:16:44 2026 +0900
+
+    test
+    
+    just test
+
+[33mcommit b0d4319bdf927dc921741481aef685f3a039a87b[m
+Author: jun9yu-527 <2715jun@gmail.com>
+Date:   Fri May 8 15:49:04 2026 +0900
+
+    중간 과정 업로드

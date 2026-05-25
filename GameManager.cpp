@@ -112,11 +112,27 @@ void GameManager::processTurn() {
         cout << "  잘못된 선택입니다. 다시 입력해주세요." << endl;
     }
 
-    // 6) 선택한 행동의 수치 변화 가져오기
+    // 6) 서브 선택지 처리
     string selectedAction = actions[choice - 1];
-    if (engine->get_current_week() == 1)
-    {
-        bird->recordEggAction(selectedAction == "방치하기");
+    vector<string> subs = actionManager.get_sub_actions(selectedAction);
+    
+    if (!subs.empty()) {
+        cout << endl;
+        cout << "  [" << selectedAction << "] - 세부 행동을 선택하세요:" << endl;
+        for (int i = 0; i < (int)subs.size(); i++) {
+            cout << "  [" << (i + 1) << "] " << subs[i] << endl;
+        }
+        cout << endl;
+
+        int subChoice = 0;
+        while (true) {
+            cout << "  선택 (1~" << subs.size() << "): ";
+            cin >> subChoice;
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            if (subChoice >= 1 && subChoice <= (int)subs.size()) break;
+            cout << "  잘못된 선택입니다. 다시 입력해주세요." << endl;
+        }
+        selectedAction = subs[subChoice - 1];  // 서브 선택지로 교체
     }
     StatChange sc = actionManager.get_action_effects(selectedAction);
 
@@ -124,7 +140,7 @@ void GameManager::processTurn() {
     bird->update_stats(sc.fullness, sc.cleanliness, sc.training, sc.stress);
 
     // 8) 확률적 아이템 효과 처리
-    string item = actionManager.get_random_item();
+    string item = actionManager.try_get_item(selectedAction);
 
     // 9) 반항 체크 — 유아기(stageInt >= 1) 이상일 때만 체크
     bool isRebellious = false;

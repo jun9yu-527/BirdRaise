@@ -43,17 +43,17 @@ public:
 
     // 현재 단계에 맞는 메인 행동 목록 반환
     vector<string> get_available_actions(string stage);
-
+ 
     // 메인 행동에 딸린 서브 선택지 반환 (아이템 보유 여부 필터링 포함)
     // 서브메뉴가 없는 행동(알 단계 등)은 빈 벡터 반환
     vector<string> get_sub_actions(string main_action);
-
+ 
     // 선택지의 수치 변화 반환 (메인 또는 서브 모두 가능)
     StatChange get_action_effects(string action_name);
-
+ 
     // 훈련 시 랜덤 아이템 획득 처리 — 획득한 아이템 이름 반환 (없으면 "")
     string try_get_item(string action_name);
-
+ 
     // 인벤토리 출력용 문자열 반환
     string get_inventory_string() const;
 };
