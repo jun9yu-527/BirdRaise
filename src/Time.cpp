@@ -66,6 +66,10 @@ void GameEngine::end_week() {
 
 // 게임 종료 조건 평가
 GameState GameEngine::evaluate_game_state() const {
+    if (bird->getAbandonedEgg()) {
+        return GameState::EggAbandon;
+    }
+
     if (!bird->getIsAlive()) {
         if (bird->getFullness() <= 0)  return GameState::StarvDead;  // 아사 엔딩
 		if (bird->getCleanliness() <= 0) return GameState::SickDead; // 병사 엔딩

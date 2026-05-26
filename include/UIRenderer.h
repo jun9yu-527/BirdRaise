@@ -28,10 +28,10 @@ private:
     //알단계
     string eggHug1;
     string eggHug2;
-    string eggTemp1;
-    string eggTemp2;
-    string eggClassic1;
-    string eggClassic2;
+    string eggBrood1;
+    string eggBrood2;
+    string roomClean1;
+    string roomClean2;
     string eggIgnore1;
     string eggIgnore2;
     //유아기 단계
@@ -63,8 +63,8 @@ private:
     string adultHunt2;
     string adultFlyTrain1;
     string adultFlyTrain2;
-    string adultAlone1;
-    string adultAlone2;
+    string academy1;
+    string academy2;
     string adultBath1;
     string adultBath2;
 

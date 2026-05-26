@@ -192,7 +192,7 @@ void GameManager::processTurn() {
 void GameManager::handleEnding() {
     // 알 상태에서는 엔딩 화면 없이 게임 계속 (호출 자체를 막음)
     int stageInt = calcStageInt(engine->get_current_week());
-    if (stageInt == 0) return;
+    if (stageInt == 0 && !bird->getAbandonedEgg()) return;
 
     system("cls");
 
@@ -215,6 +215,12 @@ void GameManager::handleEnding() {
     cout << "  최종 만족도: " << sat << " / 100" << endl;
     cout << endl;
 
+    auto waitForExit = []() {
+        cout << endl;
+        cout << "  아무 키나 누르면 게임을 종료합니다." << endl;
+        cin.get();
+    };
+
 
     // 1. 알을 1주차 내내 방치한 경우는 다른 상태보다 화석 엔딩을 우선한다.
     if (bird->getAbandonedEgg())
@@ -227,6 +233,7 @@ void GameManager::handleEnding() {
         cout << "  " << bird->getName() << "(이)는 부화하지 못하고 화석이 되어버렸다." << endl;
         cout << endl;
         cout << "         [ 히든 엔딩 - 화석이 되어버린 알 ]" << endl;
+        waitForExit();
         return;
     }
 
@@ -239,6 +246,7 @@ void GameManager::handleEnding() {
         cout << "  다음 생엔 더 좋은 집사 만나서 행복하게 살아!" << endl;
         cout << endl;
         cout << "         [ 아사 엔딩 - 잘 챙겨주지 못해서 미안해 ]" << endl;
+        waitForExit();
         return;
     }
 
@@ -249,6 +257,7 @@ void GameManager::handleEnding() {
         cout << "  '병원에 데려가지 못해서 미안해.'" << endl;
         cout << endl;
         cout << "         [ 병사 엔딩 - 집이 언제 이렇게 더러워졌지? ]" << endl;
+        waitForExit();
         return;
     }
 
@@ -261,6 +270,7 @@ void GameManager::handleEnding() {
         cout << "  '행복하고 자유로운 삶을 살 길 바랄게!'" << endl;
         cout << endl;
         cout << "         [ 도주 엔딩 - 막상 떠나니 아쉽네.. ]" << endl;
+        waitForExit();
         return;
     }
 
@@ -274,6 +284,7 @@ void GameManager::handleEnding() {
         cout << "  " << bird->getName() << "(은)는 당신과 함께하는게 행복한 듯 하다.\n" << endl;
         cout << endl;
         cout << "         [ 히든 엔딩 - 새이기를 포기한거야? ]" << endl;
+        waitForExit();
         return;
     }
 
@@ -286,6 +297,7 @@ void GameManager::handleEnding() {
         cout << "  " << bird->getName() << "(은)는 세계적인 인기스타가 되었다.\n" << endl;
         cout << endl;
         cout << "         [ 히든 엔딩 - 너 덕분에 내가 인생 폈다! ]" << endl;
+        waitForExit();
         return;
     }
 
@@ -298,6 +310,7 @@ void GameManager::handleEnding() {
         cout << "  " << bird->getName() << "(은)는 세계적인 조류 잡지의 모델이 되었다.\n" << endl;
         cout << endl;
         cout << "         [ 히든 엔딩 - 조류 잡지 모델이 되었다. ]" << endl;
+        waitForExit();
         return;
     }
 
@@ -357,6 +370,7 @@ void GameManager::handleEnding() {
     }
 
     cout << endl;
+    waitForExit();
 }
 
 void GameManager::run() {
