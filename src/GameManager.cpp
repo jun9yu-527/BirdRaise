@@ -323,8 +323,8 @@ void GameManager::handleEnding() {
     }
     else if (sat <= 75)
     {
-        srand(time(NULL));
-
+        // rand()는 Main.cpp의 srand()로 이미 초기화되어 있으므로 여기서 재호출 불필요
+        // 50% 확률로 어깨 동거 엔딩 / 방생 엔딩 분기
         if (rand() % 2)
         {
             ui.EndingArtRender("shoulderFriend");

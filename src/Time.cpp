@@ -46,7 +46,11 @@ void GameEngine::end_week() {
     apply_weekly_passive();
 
     // 상태 체크 (사망/도주 조건) — check_status() 내부에서 is_alive 처리
-    bird->check_status();
+    // 알 단계(1주차)에서는 사망 판정을 하지 않음
+    // processTurn()과 동일한 정책: stageInt >= 1(유아기 이상)일 때만 체크
+    if (current_week > 1) {
+        bird->check_status();
+    }
 
     current_week++;
 

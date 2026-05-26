@@ -1673,6 +1673,11 @@ void UIRenderer::ActionArtRender(const string& actionName, string name, int main
         actionArt1 = eggHug1;
         actionArt2 = eggHug2;
     }
+    // 쓰다듬어주기: 알 단계 행동 — 품어주기와 동일 아트 사용
+    else if (actionName == "쓰다듬어주기") {
+        actionArt1 = eggHug1;
+        actionArt2 = eggHug2;
+    }
     else if (actionName == "온도조절") {
         actionArt1 = eggTemp1;
         actionArt2 = eggTemp2;
@@ -1713,7 +1718,8 @@ void UIRenderer::ActionArtRender(const string& actionName, string name, int main
         actionArt1 = teenPremiumFeed1;
         actionArt2 = teenPremiumFeed2;
     }
-    else if (actionName == "비행 기초" || actionName == "비행 훈련") {
+    // "비행 기초"는 ActionManager에 미등록된 이름이지만 향후 확장을 위해 유지
+    else if (actionName == "비행 기초") {
         actionArt1 = teenFly1;
         actionArt2 = teenFly2;
     }
@@ -1725,6 +1731,8 @@ void UIRenderer::ActionArtRender(const string& actionName, string name, int main
         actionArt1 = adultHunt1;
         actionArt2 = adultHunt2;
     }
+    // "비행 훈련": ActionManager의 훈련 서브 행동("간단한 훈련", "학원 보내기")과는 별개로
+    // 성체 단계 비행 특화 아트 사용 — 기존 코드에서 1716번 라인과 중복되어 있던 버그 수정
     else if (actionName == "비행 훈련") {
         actionArt1 = adultFlyTrain1;
         actionArt2 = adultFlyTrain2;
