@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <limits>
+#include <conio.h>
 using namespace std;
 
 GameManager::GameManager() : bird(nullptr), engine(nullptr) {}
@@ -104,7 +105,12 @@ void GameManager::processTurn() {
     int choice = 0;
     while (true) {
         cout << "  행동을 선택하세요 (1~" << actions.size() << "): ";
-        cin >> choice;
+        if (!(cin >> choice)) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "  숫자로 입력해주세요." << endl;
+            continue;
+        }
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
         if (choice >= 1 && choice <= (int)actions.size()) break;
@@ -130,7 +136,12 @@ void GameManager::processTurn() {
         int subChoice = 0;
         while (true) {
             cout << "  세부 행동을 선택하세요 (1~" << subActions.size() << "): ";
-            cin >> subChoice;
+            if (!(cin >> subChoice)) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "  숫자로 입력해주세요." << endl;
+                continue;
+            }
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
             if (subChoice >= 1 && subChoice <= (int)subActions.size()) break;
@@ -218,7 +229,11 @@ void GameManager::handleEnding() {
     auto waitForExit = []() {
         cout << endl;
         cout << "  아무 키나 누르면 게임을 종료합니다." << endl;
-        cin.get();
+
+        while (_kbhit()) {
+            _getch();
+        }
+        _getch();
     };
 
 

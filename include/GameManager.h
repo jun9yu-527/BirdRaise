@@ -1,6 +1,6 @@
 #pragma once
 #include "GameEntity.h"
-#include "Time.h"
+#include "GameEngine.h"
 #include "ActionManager.h"
 #include "UIRenderer.h"
 #include <string>
