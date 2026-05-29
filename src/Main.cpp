@@ -18,5 +18,6 @@ int main() {
 	GameManager gameManager;
 	gameManager.run(); // 게임 실행
 
+	system("pause"); 
 	return 0;
 }

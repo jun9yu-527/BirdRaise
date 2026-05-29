@@ -124,7 +124,7 @@ void GameManager::processTurn() {
     {
         bird->recordEggAction(selectedAction == "방치하기");
     }
-    vector<string> subActions = actionManager.get_sub_actions(selectedAction, stageName);
+    vector<string> subActions = actionManager.get_sub_actions(selectedAction);
     if (!subActions.empty()) {
         cout << endl;
         cout << "  [" << selectedAction << "] 세부 행동을 선택하세요." << endl;
