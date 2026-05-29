@@ -94,7 +94,7 @@ void GameManager::processTurn() {
     vector<string> actions = actionManager.get_available_actions(stageName);
 
     // 4) 주차/남은 행동 횟수 + 선택지 출력
-    ui.ChioceRender(week, engine->get_week_count());
+    ui.ChoiceRender(week, engine->get_remaining_actions());
     cout << endl;
     for (int i = 0; i < (int)actions.size(); i++) {
         cout << "  [" << (i + 1) << "] " << actions[i] << endl;
@@ -124,7 +124,7 @@ void GameManager::processTurn() {
     {
         bird->recordEggAction(selectedAction == "방치하기");
     }
-    vector<string> subActions = actionManager.get_sub_actions(selectedAction);
+    vector<string> subActions = actionManager.get_sub_actions(selectedAction, stageName);
     if (!subActions.empty()) {
         cout << endl;
         cout << "  [" << selectedAction << "] 세부 행동을 선택하세요." << endl;
@@ -201,9 +201,9 @@ void GameManager::processTurn() {
 
 // 엔딩 처리
 void GameManager::handleEnding() {
-    // 알 상태에서는 엔딩 화면 없이 게임 계속 (호출 자체를 막음)
+    // 알 단계 + 화석 엔딩 조건 없음 + 생존 중이면 엔딩 없이 게임 계속
     int stageInt = calcStageInt(engine->get_current_week());
-    if (stageInt == 0 && !bird->getAbandonedEgg()) return;
+    if (stageInt == 0 && !bird->getAbandonedEgg() && bird->getIsAlive()) return;
 
     system("cls");
 
@@ -290,7 +290,7 @@ void GameManager::handleEnding() {
     }
 
     // 3. 특수 조건 엔딩 (히든 / 스타 / 모델)
-    if (full >= 100 && sat >= 100)
+    if (full >= 100 && sat >= 85)
     {
         ui.EndingArtRender("fatBird");
         cout << "  " << bird->getName() << "(은)는 너무 많이 먹고 움직이지 않아\n" << endl;
@@ -303,7 +303,7 @@ void GameManager::handleEnding() {
         return;
     }
 
-    if (train >= 100 && sat >= 100)
+    if (train >= 100 && sat >= 85)
     {
         ui.EndingArtRender("ttStar");
         cout << "  " << bird->getName() << "의 묘기를 찍은 영상이 조회수가 1억뷰가 넘었다.\n" << endl;
@@ -316,7 +316,7 @@ void GameManager::handleEnding() {
         return;
     }
 
-    if (clean >= 100 && sat >= 80)
+    if (clean >= 100 && sat >= 85)
     {
         ui.EndingArtRender("modelBird");
         cout << "  " << bird->getName() << "의 털이 아름답게 빛나기 시작했다.\n" << endl;

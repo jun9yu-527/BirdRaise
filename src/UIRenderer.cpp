@@ -1698,19 +1698,11 @@ void UIRenderer::ActionArtRender(const string& actionName, string name, int main
         actionArt1 = teenPremiumFeed1;
         actionArt2 = teenPremiumFeed2;
     }
-    else if (actionName == "비행 기초") {
-        actionArt1 = teenFly1;
-        actionArt2 = teenFly2;
-    }
     else if (actionName == "목욕시키기") {
         actionArt1 = teenBath1;
         actionArt2 = teenBath2;
     }
-    else if (actionName == "먹이 사냥") {
-        actionArt1 = adultHunt1;
-        actionArt2 = adultHunt2;
-    }
-    else if (actionName == "산책하기" || actionName == "비행 훈련") {
+    else if (actionName == "산책하기") {
         actionArt1 = adultFlyTrain1;
         actionArt2 = adultFlyTrain2;
     }
@@ -1777,7 +1769,7 @@ void UIRenderer::EndingArtRender(const string& endingArtName) {
     cout << Art << endl;
 }
 
-void UIRenderer::ChioceRender(int week, int actions) {
+void UIRenderer::ChoiceRender(int week, int actions) {
     cout << "---------------------------------------------------------------------" << endl;
     cout << " 현재: " << week << "주차 | 남은 행동: " << actions << "회" << endl;
 

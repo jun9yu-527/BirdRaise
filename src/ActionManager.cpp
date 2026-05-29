@@ -73,13 +73,18 @@ vector<string> ActionManager::get_available_actions(string stage) {
  
 // 메인 행동에 딸린 서브 선택지 반환
 // requires_item 이 true 인 항목은 인벤토리에 있을 때만 포함
-vector<string> ActionManager::get_sub_actions(string main_action) {
+// 유아기에는 놀아주기 서브메뉴에서 산책하기 제외
+vector<string> ActionManager::get_sub_actions(string main_action, string stage) {
     if (sub_actions.find(main_action) == sub_actions.end()) {
         return {};  // 서브메뉴 없는 행동 (알 단계 등)
     }
  
     vector<string> result;
     for (const string& sub : sub_actions[main_action]) {
+        // 유아기 놀아주기에서 산책하기 제외
+        if (stage == "유아기" && main_action == "놀아주기" && sub == "산책하기") {
+            continue;
+        }
         // 아이템 불필요 항목은 항상 포함
         if (requires_item.find(sub) == requires_item.end() || !requires_item.at(sub)) {
             result.push_back(sub);

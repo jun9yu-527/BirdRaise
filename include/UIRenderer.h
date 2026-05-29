@@ -22,7 +22,6 @@ private:
     string childArt;
     string teenArt;
     string adultArt;
-    string birdArt;
 
     //행동 아트
     //알단계
@@ -89,7 +88,7 @@ public:
     void ArtRender(int growthStage, int Action);
     void ActionArtRender(const string& actionName, string name, int mainSat, int stress, int clean, int ful, int trn);
     void EndingArtRender(const string& endingArtName);
-    void ChioceRender(int week, int actions);
+    void ChoiceRender(int week, int actions);
     void ActionResultRender(const string& actionName, const StatChange& statChange, const string& item, bool isRebellious, const string& birdName);
 
     //void UI_Manage(const ActionManager& actionManger)const;
