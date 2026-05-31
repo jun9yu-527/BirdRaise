@@ -44,8 +44,10 @@ void GameEngine::check_growth() {
 
 // 주차 종료 → 다음 주로 이동
 void GameEngine::end_week() {
-    // 패시브 수치 변화 적용
-    apply_weekly_passive();
+    // Final ending should use the stats after the last player action.
+    if (current_week < MAX_WEEKS) {
+        apply_weekly_passive();
+    }
 
     // 상태 체크 (사망/도주 조건) — check_status() 내부에서 is_alive 처리
     // 알 단계(1주차)에서는 사망 판정을 하지 않음
