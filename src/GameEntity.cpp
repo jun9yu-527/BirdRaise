@@ -1,4 +1,4 @@
-#include "GameEntity.h"
+#include "../include/GameEntity.h"
 #include <algorithm>
 #include <iostream>
 #include <cstdlib>
@@ -9,7 +9,7 @@ using namespace std;
 GameEntity::GameEntity(string birdName) 
     : name(birdName), fullness(50), cleanliness(100), 
       training(0), stress(100), stage(GrowthStage::EGG), 
-      is_alive(true), is_sick(false) {}
+      is_alive(true), is_sick(false), abandonedEgg(false), eggActionCount(0), eggIgnoreCount(0) {}
 
 // 수치 변화 적용 메서드
 void GameEntity::update_stats(int f, int c, int t, int s) {
@@ -23,18 +23,22 @@ void GameEntity::update_stats(int f, int c, int t, int s) {
 // 상태 체크 메서드 (사망, 질병, 반항, 도주)
 void GameEntity::check_status() {
     // 사망 조건: 포만감 0일 때 확정 사망
+    // return으로 즉시 종료하여 이후 조건과 메시지가 중복 실행되는 것을 방지
     if (fullness <= 0) {
         is_alive = false;
         cout << "새가 굶주림으로 인해 아사했습니다..." << endl;
+        return;
     }
-    
+
     // 사망 조건: 청결도 0일 때 확정 사망
+    // return으로 즉시 종료하여 도주 조건과 메시지가 중복 실행되는 것을 방지
     if (cleanliness <= 0) {
         is_alive = false;
         cout << "새가 질병으로 인해 병사했습니다..." << endl;
+        return;
     }
 
-    // 질병 발생: 청결도 25 이하
+    // 질병 발생: 청결도 25 이하 (사망 조건과 별개로 체크)
     is_sick = (cleanliness <= 25);
 
     // 도주 조건: 스트레스 90~100
@@ -45,9 +49,10 @@ void GameEntity::check_status() {
 }
 
 // 실시간 평균 만족도 계산
-// 공식: (포만감 + 청결도 + 훈련도 - 스트레스) / 4
+// 공식: (포만감 + 청결도 + 훈련도 + (100 - 스트레스)) / 4
 float GameEntity::get_satisfaction() const {
-    return (float)(fullness + cleanliness + training - stress) / 4.0f;
+    float total = fullness + cleanliness + training + (100 - stress);
+    return total / 4.0f;
 }
 
 // 반항 확률 체크 (스트레스 50 이상일 때 20% 확률)
